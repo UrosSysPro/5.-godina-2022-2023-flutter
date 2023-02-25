@@ -1,4 +1,6 @@
 
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 
 
@@ -29,49 +31,69 @@ void main(){
       drawer: Drawer(
         child: ListView(
           children: [
-            Text("eee"),
-            Text("eee"),
-            Text("eee"),
-            Text("eee"),
-            Text("eee"),
+            SizedBox(height: 100,),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Header",
+                style: TextStyle(fontSize: 30),
+              ),
+            ),
+            ListTile(leading:Icon(Icons.home),title: Text("item1"),),
+            ListTile(leading:Icon(Icons.search),title: Text("item2"),selected: true,),
+            ListTile(leading:Icon(Icons.sell),title: Text("item3"),),
           ],
         ),
       ),
 
       body: ListView(
         children: [
-           Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: Container(
-              height: 600,
-              decoration: BoxDecoration(
-                color: Colors.deepOrangeAccent,
-                borderRadius: BorderRadius.circular(50)
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: Container(
-              height: 600,
-              decoration: BoxDecoration(
-                color: Colors.deepOrangeAccent,
-                borderRadius: BorderRadius.circular(50)
-              ),
-            ),
-          ),
-           Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: Container(
-              height: 600,
-              decoration: BoxDecoration(
-                color: Colors.deepOrangeAccent,
-                borderRadius: BorderRadius.circular(50)
-              ),
-            ),
-          ),
+          card("Slider", Slider(value: 0.5,onChanged: (value){},)),
+          card("Switch", Switch(value: true,onChanged: (value){},)),
+          card("Text Edit", TextField()),
+          card("Button",ElevatedButton(child: Text("click"),onPressed: (){},))
         ],
       )
     )
   ));
+}
+
+
+Widget card(String title,Widget widget){
+  return Padding(
+            padding: EdgeInsets.symmetric(vertical: 20,horizontal: 10),
+            child: new Container(
+              width: 10000,
+              height: 150,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: ThemeData.dark().scaffoldBackgroundColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    offset: Offset(2,2),
+                    blurRadius: 2,
+                    spreadRadius: 3
+                  )
+                ]
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title,
+                      style: TextStyle(
+                        fontSize: 35
+                      )
+                    ),
+                    SizedBox(
+                      width: 300,
+                      child: widget,
+                    )
+                  ],
+                ),
+              ),
+            ),
+  );
 }

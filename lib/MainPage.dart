@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
 
 import 'package:app/Card.dart' as app;
+import 'package:app/CardEditPage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatefulWidget {
@@ -96,50 +98,61 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
 
-      body: ListView(
-        children: [
-          Builder(builder: (context){
-            List<Widget> widgeti=[];
-            for(int i=0;i<lista.length;i++){
-              widgeti.add(Text(lista[i]));
-            }
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: widgeti,
+      body: Builder(
+        builder: (context) {
+          
+          List<Widget> children=[];
+
+          for(int i=0;i<lista.length;i++){
+            children.add(
+              app.Card(
+                widget:Container(),
+                title: lista[i],
+                page: CardEditPage(lista,i),
+              )
             );
-          }),
-          app.Card(
-            title:"Slider",
-            widget: Slider(
-              value: sliderValue,
-              onChanged: (value){
-                setState(() {
-                  sliderValue=value;
-                });
-              },
-            )
-          ),
-          app.Card(
-            title: "Switch",
-            widget: Switch(
-              value: switchValue,
-              onChanged: (value){
-                setState(() {
-                  if(value==true){
-                    print("dark theme");
-                    theme=ThemeData.dark();
-                  }else{
-                    print("light theme");
-                    theme=ThemeData.light();
-                  }
-                  switchValue=value;
-                });
-              },
-            )
-          ),
-          app.Card(title: "Text Field",widget: TextField()),
-          app.Card(title: "Button",widget: ElevatedButton(child: Text("click"),onPressed: (){},))
-        ],
+          }
+
+          children.addAll(
+            [
+              app.Card(
+                title:"Slider",
+                widget: Slider(
+                  value: sliderValue,
+                  onChanged: (value){
+                    setState(() {
+                      sliderValue=value;
+                    });
+                  },
+                )
+              ),
+              app.Card(
+                title: "Switch",
+                widget: CupertinoSwitch(
+                  value: switchValue,
+                  onChanged: (value){
+                    setState(() {
+                      if(value==true){
+                        print("dark theme");
+                        theme=ThemeData.dark();
+                      }else{
+                        print("light theme");
+                        theme=ThemeData.light();
+                      }
+                      switchValue=value;
+                    });
+                  },
+                )
+              ),
+              app.Card(title: "Text Field",widget: TextField()),
+              app.Card(title: "Button",widget: ElevatedButton(child: Text("click"),onPressed: (){},))
+            ]
+          );
+
+          return ListView(
+            children: children,
+          );
+        }
       )
     
     ));

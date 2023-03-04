@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
+
 import 'package:app/Card.dart' as app;
 import 'package:flutter/material.dart';
 
@@ -14,7 +16,10 @@ class _MainPageState extends State<MainPage> {
   var sliderValue=0.5;
   var switchValue=true;
   var textEditValue="";
+  var currentIndex=0;
   var theme=ThemeData.dark();
+  var postValue="";
+  List<String> lista=[];
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +38,23 @@ class _MainPageState extends State<MainPage> {
           },
         ),
       ),
+      
       floatingActionButton: FloatingActionButton.extended(
         onPressed: (){
-          print("click");
+          showAddMenu();
         },
-        label: Text("Add")
+        label: Row(
+          children: [
+            Icon(Icons.add),
+            Text(
+              "Add",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 17
+              ),
+            )
+          ],
+        ),
       ),
 
       drawer: Drawer(
@@ -51,15 +68,46 @@ class _MainPageState extends State<MainPage> {
                 style: TextStyle(fontSize: 30),
               ),
             ),
-            ListTile(leading:Icon(Icons.home),title: Text("item1"),),
-            ListTile(leading:Icon(Icons.search),title: Text("item2"),selected: true,),
-            ListTile(leading:Icon(Icons.sell),title: Text("item3"),),
+            ListTile(
+              leading:Icon(Icons.arrow_back),
+              title: Text("item1"),
+              selected: currentIndex==0,
+              onTap: (){setState(() {
+                currentIndex=0;
+              });},
+            ),
+            ListTile(
+              leading:Icon(Icons.arrow_forward),
+              title: Text("item2"),
+              selected: currentIndex==1,
+              onTap: (){setState(() {
+                currentIndex=1;
+              });},
+            ),
+            ListTile(
+              leading:Icon(Icons.sell),
+              title: Text("item3"),
+              selected: currentIndex==2,
+              onTap: (){setState(() {
+                currentIndex=2;
+              });},
+            ),
           ],
         ),
       ),
 
       body: ListView(
         children: [
+          Builder(builder: (context){
+            List<Widget> widgeti=[];
+            for(int i=0;i<lista.length;i++){
+              widgeti.add(Text(lista[i]));
+            }
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: widgeti,
+            );
+          }),
           app.Card(
             title:"Slider",
             widget: Slider(
@@ -95,6 +143,74 @@ class _MainPageState extends State<MainPage> {
       )
     
     ));
+  }
+
+
+  void showAddMenu(){
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context){
+        return Padding(
+          padding: EdgeInsets.all(20.0),
+          child: Container(
+            height: 600,
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(30)
+            ),
+            child: Column(
+              children: [
+                Container(
+                height: 100,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "New Post",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30
+                      ),
+                    ),
+                  ),
+                ),
+                color: Theme.of(context).primaryColor,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      labelText: "Post",
+                      border: OutlineInputBorder()
+                    ),
+                    onChanged: (value){
+                      postValue=value;
+                    },
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: ElevatedButton(
+                    onPressed: (){
+                      setState(() {
+                        if(postValue.length==0)return;
+                        lista.add(postValue);
+                        postValue="";
+                        Navigator.pop(context);
+                      });
+                    },
+                    child: Text("Post"),
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      }
+    );
   }
 }
 

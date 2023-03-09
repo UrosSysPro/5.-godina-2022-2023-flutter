@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
 
-import 'package:app/Card.dart' as app;
-import 'package:app/CardEditPage.dart';
+import 'package:app/primeriWidgeta/Card.dart' as app;
+import 'package:app/primeriWidgeta/CardEditPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

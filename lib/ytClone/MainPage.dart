@@ -1,17 +1,16 @@
-import 'package:app/HomePage.dart';
-import 'package:app/ShortsPage.dart';
+import 'package:app/ytClone/HomePage.dart';
+import 'package:app/ytClone/ShortsPage.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({ Key? key }) : super(key: key);
+  const MainPage({Key? key}) : super(key: key);
 
   @override
   _MainPageState createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-
-  int currentPage=0;
+  int currentPage = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -20,24 +19,24 @@ class _MainPageState extends State<MainPage> {
       title: "Title",
       theme: ThemeData.dark(),
       home: Scaffold(
-        body: Builder(builder: (context){
-          if(currentPage==0)return HomePage();
-          if(currentPage==1)return ShortsPage();
+        body: Builder(builder: (context) {
+          if (currentPage == 0) return HomePage();
+          if (currentPage == 1) return ShortsPage();
           return Container();
         }),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: currentPage,
-          onTap: (value){
+          onTap: (value) {
             setState(() {
-              currentPage=value;
+              currentPage = value;
             });
           },
           selectedItemColor: Colors.white,
           unselectedItemColor: Colors.white,
           showUnselectedLabels: true,
-          iconSize: 30,
-          selectedFontSize: 16,
-          unselectedFontSize: 16,
+          iconSize: 25,
+          selectedFontSize: 13,
+          unselectedFontSize: 13,
           type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(
@@ -55,20 +54,19 @@ class _MainPageState extends State<MainPage> {
               label: "",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.folder),
-              label: "Home"
-            ),
+                icon: Icon(Icons.folder), label: "Subscriptions"),
             BottomNavigationBarItem(
-              icon: Icon(Icons.library_add),
-              label: "Home"
-            ),
+                icon: Icon(Icons.library_add), label: "Library"),
           ],
         ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: (){},
+        //   child: Icon(Icons.add),
+        // ),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
       ),
     );
   }
-
-  
 }
 
 // ui=build(state)

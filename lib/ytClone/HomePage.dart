@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -20,21 +22,18 @@ class HomePage extends StatelessWidget {
               ],
               floating: true,
               bottom: PreferredSize(
-                preferredSize: Size.fromHeight(50),
+                preferredSize: Size.fromHeight(34),
                 child: SizedBox(
-                  height: 30,
-                  child: ListView(
+                  height: 34,
+                  child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    children: [
-                      FilterChip(
-                          label: Text("gaming"), onSelected: (selected) {}),
-                      FilterChip(
-                          label: Text("gaming"), onSelected: (selected) {}),
-                      FilterChip(
-                          label: Text("gaming"), onSelected: (selected) {}),
-                      FilterChip(
-                          label: Text("gaming"), onSelected: (selected) {}),
-                    ],
+                    itemCount: 10,
+                    itemBuilder: (context,index){
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 3),
+                        child: FilterChip(label: Text("Label"), onSelected: (value){}),
+                      );
+                    },
                   ),
                 ),
               ),

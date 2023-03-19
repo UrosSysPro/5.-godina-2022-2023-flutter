@@ -50,7 +50,7 @@ class _MainPageState extends State<MainPage> {
               activeIcon: Icon(Icons.video_call),
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.add),
+              icon: Transform.translate(offset: Offset(0,8),child: Icon(Icons.add),),
               label: "",
             ),
             BottomNavigationBarItem(

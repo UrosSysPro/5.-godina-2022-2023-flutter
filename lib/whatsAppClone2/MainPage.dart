@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:app/whatsAppClone2/HomePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -14,8 +15,15 @@ class _MainPageState extends State<MainPage> {
   var auth = FirebaseAuth.instance;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    auth.setPersistence(Persistence.LOCAL);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
       home: Scaffold(
           body: StreamBuilder(
@@ -23,7 +31,7 @@ class _MainPageState extends State<MainPage> {
         builder: (context, snapshot) {
           if (snapshot.hasError) return errorPage(snapshot.error!);
           if (snapshot.data == null) return signIn();
-          return userInfoPage(snapshot.data!);
+          return HomePage(snapshot.data!);
         },
       )),
     );
@@ -71,8 +79,7 @@ class _MainPageState extends State<MainPage> {
     googleProvider.setCustomParameters({'login_hint': 'user@example.com'});
 
     // Once signed in, return the UserCredential
-    var credentials =
-        await auth.signInWithPopup(googleProvider);
+    var credentials = await auth.signInWithPopup(googleProvider);
 
     return credentials;
   }

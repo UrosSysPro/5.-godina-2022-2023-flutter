@@ -10,14 +10,7 @@ class StartChatPage extends StatefulWidget {
 
 class _StartChatPageState extends State<StartChatPage> {
 
-  var db=FirebaseFirestore.instance;
-  late Future<QuerySnapshot<Map<String, dynamic>>> future;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    future=db.collection("users").get();
-  }
+  var userRef=FirebaseFirestore.instance.collection("users");
 
   @override
   Widget build(BuildContext context) {
@@ -25,17 +18,31 @@ class _StartChatPageState extends State<StartChatPage> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: (){
-          
+            Navigator.pop(context);
           },
           icon: Icon(Icons.arrow_back),
         ),
       ),
-      body: FutureBuilder(
-        future: future,
-        builder: (context, snapshot) {
-          return Container();
+      body: StreamBuilder(
+        stream: userRef.snapshots(),
+        builder: (context,snapshot){
+          if(snapshot.hasError)return Container(color: Colors.red,);
+          if(!snapshot.hasData)return Container(color: Colors.white,);
+          int n=snapshot.data!.docs.length;
+          if(n==0)return Center(
+            child: Text("nema nikog"),
+          );
+          return ListView.builder(
+            itemCount: n,
+            itemBuilder: (context,index){
+              return ListTile(
+                leading: Icon(Icons.person),
+                title: Text( snapshot.data!.docs[index]["nickname"]),
+              );
+            },
+          );
         },
-      ),
+      )
     );
   }
 }

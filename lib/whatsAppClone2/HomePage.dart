@@ -1,3 +1,4 @@
+import 'package:app/whatsAppClone2/ChatPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,7 +27,12 @@ class _HomePageState extends State<HomePage> {
       stream: myDocRef.snapshots(),
       builder: (context,snapshot){
         if(snapshot.hasError)return Container(color: Colors.red,);
-        if(!snapshot.hasData||snapshot.data!.data()==null){
+        if(!snapshot.hasData){
+          //loading
+          return Container(color: Colors.blue,);
+        }
+        if(snapshot.data!.data()==null){
+          //ako se ucita a user ne postoji
           //setup user
           myDocRef.set(<String,dynamic>{
             "nickname":widget.user.displayName,
@@ -56,7 +62,33 @@ class _HomePageState extends State<HomePage> {
               )
             ],
           ),
-          body: Container(),
+          body: StreamBuilder(
+            stream: db.collection("chats")
+            .where("uids",arrayContains: widget.user.uid)
+            .snapshots(),
+            builder: (context,snapshot){
+              if(snapshot.hasError)return Container(color: Colors.red,);
+              if(!snapshot.hasData)return Center(child: Text("Loading..."),);
+              var docs=snapshot.data!.docs;
+              return ListView.builder(
+                itemCount: docs.length,
+                itemBuilder: (context,index){
+                  String uid1= docs[index]["uids"][0];
+                  String uid2= docs[index]["uids"][1];
+                  return ListTile(
+                    leading: Icon(Icons.person),
+                    title: Text(uid1),
+                    subtitle: Text(uid2),
+                    onTap: (){
+                      Navigator.push(context, CupertinoPageRoute(builder: (context){
+                        return ChatPage(uid1,uid2,widget.user,docs[index].id);
+                      }));
+                    },
+                  );
+                },
+              );
+            },
+          ),
           floatingActionButton: FloatingActionButton.extended(
             icon: Icon(Icons.chat),
             label: Text("Start Chat"),

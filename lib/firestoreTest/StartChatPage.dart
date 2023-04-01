@@ -1,4 +1,6 @@
+import 'package:app/firestoreTest/UserModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class StartChatPage extends StatefulWidget {
@@ -28,16 +30,24 @@ class _StartChatPageState extends State<StartChatPage> {
         builder: (context,snapshot){
           if(snapshot.hasError)return Container(color: Colors.red,);
           if(!snapshot.hasData)return Container(color: Colors.white,);
-          int n=snapshot.data!.docs.length;
-          if(n==0)return Center(
-            child: Text("nema nikog"),
-          );
+          
+          var users=UserModel.fromDoc(snapshot.data!.docs);
+
           return ListView.builder(
-            itemCount: n,
+            itemCount: users.length,
             itemBuilder: (context,index){
               return ListTile(
+                onTap: (){
+                  FirebaseFirestore.instance.collection("chats").add(<String,dynamic>{
+                    "uids":[
+                      users[index].uid,
+                      FirebaseAuth.instance.currentUser!.uid
+                    ]
+                  });
+                  Navigator.pop(context);
+                },
                 leading: Icon(Icons.person),
-                title: Text( snapshot.data!.docs[index]["nickname"]),
+                title: Text(users[index].nickName),
               );
             },
           );

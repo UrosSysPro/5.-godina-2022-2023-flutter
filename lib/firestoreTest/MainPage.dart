@@ -1,4 +1,5 @@
 import 'package:app/firestoreTest/HomePage.dart';
+import 'package:app/firestoreTest/SetupAccount.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class MainPage extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.error != null) return errorPage(snapshot.error);
               if (snapshot.data == null) return signInPage();
-              return HomePage(user:snapshot.data!);
+              return SetupAccount(user:snapshot.data!);
             },
           ),
         ));
@@ -64,16 +65,6 @@ class MainPage extends StatelessWidget {
 
     // Once signed in, return the UserCredential
     var credentials= await FirebaseAuth.instance.signInWithPopup(googleProvider);
-    
-    if(credentials.user!=null){
-
-      FirebaseFirestore.instance
-        .collection("users")
-        .doc(credentials.user!.uid).set(<String,dynamic>{
-          "nickname":credentials.user!.displayName??"nema nadimak:("
-        });
-    }
-   
 
     return credentials;
     // Or use signInWithRedirect

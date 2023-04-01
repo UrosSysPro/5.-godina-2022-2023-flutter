@@ -1,3 +1,4 @@
+import 'package:app/firestoreTest/ChatModel.dart';
 import 'package:app/firestoreTest/StartChatPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,7 +27,17 @@ class _HomePageState extends State<HomePage> {
               FirebaseAuth.instance.signOut();
             },
             icon: Icon(Icons.logout)
-          )
+          ),
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: ClipRRect(
+          //     borderRadius: BorderRadius.circular(20),
+          //     child: Image(
+          //       image: NetworkImage(widget.user.photoURL!),
+          //       fit: BoxFit.cover,
+          //     ),
+          //   ),
+          // )
         ],
       ),
       body: StreamBuilder(
@@ -37,22 +48,15 @@ class _HomePageState extends State<HomePage> {
           if(snapshot.hasError)return Container(color: Colors.red,);
           if(!snapshot.hasData)return Container(color:Colors.white);
           
-          for(var doc in snapshot.data!.docs){
-            print(doc.id);
-            print(doc["uids"][0]);
-            print(doc["uids"][1]);
-          }
-          var n=snapshot.data!.docs.length;
-          print(n);
+          List<ChatModel> chats=ChatModel.fromDoc(snapshot.data!.docs);
 
-          if(n==0){
+          if(chats.length==0){
             return Center(
               child: Text("zapocni neki razgovor"),
             );
           }
-
           return ListView.builder(
-            itemCount: n,
+            itemCount: chats.length,
             itemBuilder: (context,index){
               return Column(
                 children: [

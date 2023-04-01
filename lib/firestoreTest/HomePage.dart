@@ -46,26 +46,12 @@ class _HomePageState extends State<HomePage> {
                   .snapshots(),
         builder: ((context, snapshot) {
           if(snapshot.hasError)return Container(color: Colors.red,);
-          if(!snapshot.hasData)return Container(color:Colors.white);
-          
-          List<ChatModel> chats=ChatModel.fromDoc(snapshot.data!.docs);
+        
+          if(!snapshot.hasData)return Center(child: Text("loading..."),);
 
-          if(chats.length==0){
-            return Center(
-              child: Text("zapocni neki razgovor"),
-            );
-          }
-          return ListView.builder(
-            itemCount: chats.length,
-            itemBuilder: (context,index){
-              return Column(
-                children: [
-                  Text(snapshot.data!.docs[index]["uids"][0]),
-                  Text(snapshot.data!.docs[index]["uids"][1]),
-                ],
-              );
-            }
-          );
+          var chats=ChatModel.fromDoc(snapshot.data!.docs); 
+         
+          return Container();
         }),
       ),
       floatingActionButton: FloatingActionButton.extended(

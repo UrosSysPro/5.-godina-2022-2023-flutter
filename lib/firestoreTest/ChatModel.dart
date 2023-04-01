@@ -8,7 +8,11 @@ class ChatModel{
     List<ChatModel> list=[];
 
     for(var doc in docs){
-      list.add(ChatModel(doc["uids"]));
+      var data=doc.data();
+      list.add(ChatModel([
+        data["uids"][0],
+        data["uids"][1]
+      ]));
     }
 
     return list;

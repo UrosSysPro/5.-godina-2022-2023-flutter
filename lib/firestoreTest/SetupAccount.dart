@@ -19,8 +19,8 @@ class _SetupAccountState extends State<SetupAccount> {
       stream: db.collection("users").doc(widget.user.uid).snapshots(),
       builder: (context,snapshot){
         if(snapshot.hasError)return Container(color: Colors.red,);
-        var docSnapshot=snapshot.data!;
-        if(docSnapshot.data()==null){
+        if(!snapshot.hasData)return Center(child: Text("loading..."),);
+        if(snapshot.data!.data()==null){
           db.collection("users").doc(widget.user.uid).set(<String,dynamic>{
             "nickname":widget.user.displayName,
             "photoUrl":widget.user.photoURL,

@@ -30,6 +30,7 @@ class _MainPageState extends State<MainPage> {
         stream: auth.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasError) return errorPage(snapshot.error!);
+          if(!snapshot.hasData)return Center(child: Text("loading..."),);
           if (snapshot.data == null) return signIn();
           return HomePage(snapshot.data!);
         },

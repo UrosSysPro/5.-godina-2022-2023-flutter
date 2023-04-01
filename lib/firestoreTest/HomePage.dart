@@ -1,7 +1,9 @@
 import 'package:app/firestoreTest/ChatModel.dart';
 import 'package:app/firestoreTest/StartChatPage.dart';
+import 'package:app/firestoreTest/ChatPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -51,7 +53,27 @@ class _HomePageState extends State<HomePage> {
 
           var chats=ChatModel.fromDoc(snapshot.data!.docs); 
          
-          return Container();
+          return ListView.builder(
+            itemCount: chats.length,
+            itemBuilder: (context,index){
+              return ListTile(
+                leading: Icon(Icons.person),
+                title: Text(chats[index].uids[0]),
+                subtitle: Text(chats[index].uids[1]),
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context){
+                        
+                        return ChatPage(widget.user,chats[index]);
+                      }
+                    )
+                  );
+                },
+              );
+            },
+          );
         }),
       ),
       floatingActionButton: FloatingActionButton.extended(

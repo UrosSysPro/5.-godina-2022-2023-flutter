@@ -11,7 +11,7 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: "Sign in",
-        theme: ThemeData.dark(),
+        theme: ThemeData.dark().copyWith(useMaterial3: true),
         debugShowCheckedModeBanner: false,
         home: Scaffold(
           body: StreamBuilder(

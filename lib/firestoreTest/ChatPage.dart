@@ -1,4 +1,5 @@
 import 'package:app/firestoreTest/ChatModel.dart';
+import 'package:app/firestoreTest/MessageModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
 
   var db=FirebaseFirestore.instance;
+  var messageText="";
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +42,13 @@ class _ChatPageState extends State<ChatPage> {
               builder: (context,snapshot){
                 if(snapshot.hasError)return Container(color:Colors.red);
                 if(!snapshot.hasData)return Center(child: Text("loading..."),);
-                List<String> messages=[];
-                for(var doc in snapshot.data!.docs){
-                  messages.add(doc.data()["text"]);
-                }
+                
+                var messages=MessageModel.fromDocs(snapshot.data!.docs);
+
                 return ListView.builder(
                   itemCount: messages.length,
                   itemBuilder: (context,index){
-                    return Text(messages[index]);
+                    return Text(messages[index].text);
                   },
                 );
               },
@@ -55,37 +56,64 @@ class _ChatPageState extends State<ChatPage> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                vertical: 10,horizontal: 20
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                color: Colors.white
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black
-                      ),
-                      decoration: null,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 10,horizontal: 10
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Theme.of(context).primaryColor
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.emoji_emotions),
+                        SizedBox(width: 10,),
+                        Expanded(
+                          child: TextField(
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white
+                            ),
+                            decoration: null,
+                            onChanged: (value){
+                              messageText=value;
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 10,),
+                        Icon(Icons.attachment),
+                        SizedBox(width: 10,),
+                        Icon(Icons.photo)
+                      ],
                     ),
                   ),
-                  ElevatedButton(
+                ),
+                SizedBox(width: 8,),
+                Container(
+                  width: 40,height: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: Colors.green
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.send),
                     onPressed: (){
-                      db.collection("messages").add(<String,dynamic>{
-                        "chatId":widget.chat.id,
-                        "text":"yoo"
-                      });
+                      if(messageText.isNotEmpty){
+                        db.collection("messages").add(<String,dynamic>{
+                          "chatId":widget.chat.id,
+                          "userId":widget.user.uid,
+                          "text":messageText,
+                          "time":DateTime.now()
+                        });
+                      }
                     },
-                    child: Icon(Icons.send),
-                  )
-                ],
-              ),
+                  ),
+                )
+              ],
             ),
           )
         ],

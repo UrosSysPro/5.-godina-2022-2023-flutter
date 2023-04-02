@@ -25,6 +25,7 @@ class _SetupAccountState extends State<SetupAccount> {
             "nickname":widget.user.displayName,
             "photoUrl":widget.user.photoURL,
           });
+          return Container(color: Colors.orange,);
         }
         return HomePage(user:widget.user);
       },

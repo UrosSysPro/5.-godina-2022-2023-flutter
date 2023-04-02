@@ -1,3 +1,5 @@
+import 'package:app/whatsAppClone2/ChatModel.dart';
+import 'package:app/whatsAppClone2/UserModel.dart';
 import 'package:app/whatsAppClone2/ChatPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -38,9 +40,10 @@ class _HomePageState extends State<HomePage> {
             "nickname":widget.user.displayName,
             "photoUrl":widget.user.photoURL,
           });
-          return Container(color: Colors.blue,);
+          return Container(color: Colors.orange,);
         }
-        var userInfo=snapshot.data!.data()!;
+        var userInfo=UserModel.fromDoc(snapshot.data!);
+        print(userInfo);
         // print(userInfo!["nickname"]);
         // print(userInfo["photoUrl"]);
         //chat
@@ -54,7 +57,7 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.circular(20),
                   child: Image(
                     image: NetworkImage(
-                      userInfo["photoUrl"]
+                      userInfo.photoUrl
                     ),
                     fit: BoxFit.cover,
                   ),
@@ -69,19 +72,20 @@ class _HomePageState extends State<HomePage> {
             builder: (context,snapshot){
               if(snapshot.hasError)return Container(color: Colors.red,);
               if(!snapshot.hasData)return Center(child: Text("Loading..."),);
-              var docs=snapshot.data!.docs;
+              var chats=ChatModel.fromDocs(snapshot.data!.docs);
+              
               return ListView.builder(
-                itemCount: docs.length,
+                itemCount:chats.length,
                 itemBuilder: (context,index){
-                  String uid1= docs[index]["uids"][0];
-                  String uid2= docs[index]["uids"][1];
+                  String uid1= chats[index].uid1;
+                  String uid2= chats[index].uid2;
                   return ListTile(
                     leading: Icon(Icons.person),
                     title: Text(uid1),
                     subtitle: Text(uid2),
                     onTap: (){
                       Navigator.push(context, CupertinoPageRoute(builder: (context){
-                        return ChatPage(uid1,uid2,widget.user,docs[index].id);
+                        return ChatPage(chats[index],userInfo);
                       }));
                     },
                   );

@@ -1,5 +1,6 @@
 import 'package:app/firestoreTest/ChatModel.dart';
 import 'package:app/firestoreTest/MessageModel.dart';
+import 'package:app/firestoreTest/MessageView.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +17,20 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
 
   var db=FirebaseFirestore.instance;
-  var messageText="";
+  late TextEditingController controller;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    controller=TextEditingController();
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    controller.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +61,8 @@ class _ChatPageState extends State<ChatPage> {
                 return ListView.builder(
                   itemCount: messages.length,
                   itemBuilder: (context,index){
-                    return Text(messages[index].text);
+                    // return Text(messages[index].text);
+                    return MessageView(widget.user, messages[index]);
                   },
                 );
               },
@@ -73,15 +87,13 @@ class _ChatPageState extends State<ChatPage> {
                         SizedBox(width: 10,),
                         Expanded(
                           child: TextField(
+                            controller: controller,
                             maxLines: 1,
                             style: TextStyle(
                               fontSize: 20,
                               color: Colors.white
                             ),
                             decoration: null,
-                            onChanged: (value){
-                              messageText=value;
-                            },
                           ),
                         ),
                         SizedBox(width: 10,),
@@ -102,12 +114,15 @@ class _ChatPageState extends State<ChatPage> {
                   child: IconButton(
                     icon: Icon(Icons.send),
                     onPressed: (){
-                      if(messageText.isNotEmpty){
+                      if(controller.text.isNotEmpty){
                         db.collection("messages").add(<String,dynamic>{
                           "chatId":widget.chat.id,
                           "userId":widget.user.uid,
-                          "text":messageText,
+                          "text":controller.text,
                           "time":DateTime.now()
+                        });
+                        setState(() {
+                          controller.text="";
                         });
                       }
                     },

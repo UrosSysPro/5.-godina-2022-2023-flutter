@@ -1,5 +1,9 @@
+
 import 'package:app/whatsAppClone2/ChatModel.dart';
+import 'package:app/whatsAppClone2/MessageModel.dart';
+import 'package:app/whatsAppClone2/MessageView.dart';
 import 'package:app/whatsAppClone2/UserModel.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +19,21 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  var messageText="";
+  late TextEditingController controller;
+  var db=FirebaseFirestore.instance;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    controller=TextEditingController();
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    controller.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,14 +46,42 @@ class _ChatPageState extends State<ChatPage> {
       ),
       body: Column(
         children: [
-          Expanded(child: ListView(),),
+          Expanded(
+            child: StreamBuilder(
+              stream: db.collection("messages")//.orderBy("time")
+              .where("chatId",isEqualTo: widget.chat.id)
+              .snapshots(),
+              builder: (context,snapshot){
+                if(snapshot.hasError)return Container(color: Colors.red,);
+                if(!snapshot.hasData)return Center(child: Text("Loading..."),);
+                
+                var messages=MessageModel.fromDocs(snapshot.data!.docs);
+                messages.sort((m1,m2){
+                  if(m1.time.microsecondsSinceEpoch>m2.time.microsecondsSinceEpoch){
+                    return 1;
+                  }else{
+                    return -1;
+                  }
+                });
+                return ListView.builder(
+                  itemCount: messages.length,
+                  itemBuilder: (context,index){
+                    return MessageView(
+                      message: messages[index],
+                      user:widget.user
+                    );
+                  },
+                );
+              },
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
+                    padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                     decoration: BoxDecoration(
                       color: Color.fromARGB(255, 19, 19, 19),
                       borderRadius: BorderRadius.circular(100)
@@ -43,19 +89,21 @@ class _ChatPageState extends State<ChatPage> {
                     child: Row(
                       children: [
                         Icon(Icons.emoji_emotions),
+                        SizedBox(width: 10,),
                         Expanded(
                           child: TextField(
+                            controller: controller,
                             decoration: null,
                             style: TextStyle(
                               fontSize: 20
                             ),
-                            onChanged: (value){
-                              messageText=value;
-                            },
                           ),
                         ),
+                        SizedBox(width: 10,),
                         Icon(Icons.attachment),
+                        SizedBox(width: 10,),
                         Icon(Icons.photo),
+                        SizedBox(width: 10,),
                       ],
                     ),
                   )
@@ -72,7 +120,16 @@ class _ChatPageState extends State<ChatPage> {
                       splashRadius: 1,
                       icon: Icon(Icons.send,size: 20,),
                       onPressed: (){
-                        
+                        if(controller.text.isNotEmpty){
+                          var t=Timestamp.fromDate(DateTime.now());
+                          db.collection("messages").add(<String,dynamic>{
+                            "chatId":widget.chat.id,
+                            "text":controller.text,
+                            "time":t,
+                            "userId":widget.user.id
+                          });
+                          controller.text="";
+                        }
                       },
                     ),
                   ),

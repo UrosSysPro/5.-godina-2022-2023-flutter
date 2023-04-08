@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
         if(snapshot.hasError)return Container(color: Colors.red,);
         if(!snapshot.hasData){
           //loading
-          return Container(color: Colors.blue,);
+          return Center(child: Text("Loading..."),);
         }
         if(snapshot.data!.data()==null){
           //ako se ucita a user ne postoji
@@ -53,15 +53,15 @@ class _HomePageState extends State<HomePage> {
             actions: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image(
-                    image: NetworkImage(
-                      userInfo.photoUrl
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                // child: ClipRRect(
+                //   borderRadius: BorderRadius.circular(20),
+                //   child: Image(
+                //     image: NetworkImage(
+                //       userInfo.photoUrl
+                //     ),
+                //     fit: BoxFit.cover,
+                //   ),
+                // ),
               )
             ],
           ),

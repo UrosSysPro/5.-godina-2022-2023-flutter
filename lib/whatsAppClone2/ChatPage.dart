@@ -10,9 +10,10 @@ import 'package:flutter/material.dart';
 class ChatPage extends StatefulWidget {
   
   UserModel user;
+  UserModel? other;
   ChatModel chat;
   
-  ChatPage(this.chat,this.user);
+  ChatPage(this.chat,this.user,this.other);
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -42,27 +43,21 @@ class _ChatPageState extends State<ChatPage> {
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(widget.chat.uid1==widget.user.id?widget.chat.uid2:widget.chat.uid1),
+        title: Text(widget.other?.nickname??"Loading..."),
       ),
       body: Column(
         children: [
           Expanded(
             child: StreamBuilder(
               stream: db.collection("messages")//.orderBy("time")
-              .where("chatId",isEqualTo: widget.chat.id)
+              .where("chatId",isEqualTo: widget.chat.id).orderBy("time").limit(100)
               .snapshots(),
               builder: (context,snapshot){
                 if(snapshot.hasError)return Container(color: Colors.red,);
                 if(!snapshot.hasData)return Center(child: Text("Loading..."),);
                 
                 var messages=MessageModel.fromDocs(snapshot.data!.docs);
-                messages.sort((m1,m2){
-                  if(m1.time.microsecondsSinceEpoch>m2.time.microsecondsSinceEpoch){
-                    return 1;
-                  }else{
-                    return -1;
-                  }
-                });
+
                 return ListView.builder(
                   itemCount: messages.length,
                   itemBuilder: (context,index){

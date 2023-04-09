@@ -1,8 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:app/whatsAppClone2/HomePage.dart';
+import 'package:app/whatsAppClone2/UsersState.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -22,19 +24,22 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
-      home: Scaffold(
-          body: StreamBuilder(
-        stream: auth.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) return errorPage(snapshot.error!);
-          // if(!snapshot.hasData)return Center(child: Text("loading..."),);
-          if (snapshot.data == null) return signIn();
-          return HomePage(snapshot.data!);
-        },
-      )),
+    return ChangeNotifierProvider(
+      create: (context)=>UsersState(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData.dark(),
+        home: Scaffold(
+            body: StreamBuilder(
+          stream: auth.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) return errorPage(snapshot.error!);
+            // if(!snapshot.hasData)return Center(child: Text("loading..."),);
+            if (snapshot.data == null) return signIn();
+            return HomePage(snapshot.data!);
+          },
+        )),
+      ),
     );
   }
 
@@ -78,7 +83,7 @@ class _MainPageState extends State<MainPage> {
     googleProvider
         .addScope('https://www.googleapis.com/auth/contacts.readonly');
     googleProvider.setCustomParameters({'login_hint': 'user@example.com'});
-
+    
     // Once signed in, return the UserCredential
     var credentials = await auth.signInWithPopup(googleProvider);
 

@@ -12,6 +12,9 @@ class UserModel{
   }
 
   static UserModel fromDoc(DocumentSnapshot<Map<String, dynamic>> doc){
+    if(doc.data()==null){
+      return UserModel("nema ime","nema sliku",doc.id);
+    }
     return UserModel(
       doc["nickname"],
       doc["photoUrl"],

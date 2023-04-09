@@ -1,5 +1,5 @@
-import 'package:app/firestoreTest/ChatModel.dart';
-import 'package:app/firestoreTest/MessageModel.dart';
+import 'package:app/firestoreTest/models/ChatModel.dart';
+import 'package:app/firestoreTest/models/MessageModel.dart';
 import 'package:app/firestoreTest/MessageView.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -57,6 +57,11 @@ class _ChatPageState extends State<ChatPage> {
                 if(!snapshot.hasData)return Center(child: Text("loading..."),);
                 
                 var messages=MessageModel.fromDocs(snapshot.data!.docs);
+                messages.sort((m1,m2){
+                  var t1=m1.date.millisecondsSinceEpoch;
+                  var t2=m2.date.millisecondsSinceEpoch;
+                  return t1>t2?1:-1;
+                });
 
                 return ListView.builder(
                   itemCount: messages.length,

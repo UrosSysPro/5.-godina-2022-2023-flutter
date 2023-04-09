@@ -1,4 +1,4 @@
-import 'package:app/firestoreTest/ChatModel.dart';
+import 'package:app/firestoreTest/models/ChatModel.dart';
 import 'package:app/firestoreTest/StartChatPage.dart';
 import 'package:app/firestoreTest/ChatPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,16 +30,16 @@ class _HomePageState extends State<HomePage> {
             },
             icon: Icon(Icons.logout)
           ),
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: ClipRRect(
-          //     borderRadius: BorderRadius.circular(20),
-          //     child: Image(
-          //       image: NetworkImage(widget.user.photoURL!),
-          //       fit: BoxFit.cover,
-          //     ),
-          //   ),
-          // )
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image(
+                image: NetworkImage(widget.user.photoURL!),
+                fit: BoxFit.cover,
+              ),
+            ),
+          )
         ],
       ),
       body: StreamBuilder(

@@ -3,6 +3,7 @@ import 'package:app/whatsAppClone2/MessageModel.dart';
 import 'package:app/whatsAppClone2/MessageView.dart';
 import 'package:app/whatsAppClone2/UserModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   late TextEditingController controller;
   late FocusNode focusNode;
+  var emojiShowing=false;
   var db = FirebaseFirestore.instance;
 
   @override
@@ -82,17 +84,25 @@ class _ChatPageState extends State<ChatPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
                     child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
                   decoration: BoxDecoration(
                       color: Color.fromARGB(255, 19, 19, 19),
                       borderRadius: BorderRadius.circular(25)),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      actionIcon(icon: Icon(Icons.emoji_emotions)),
+                      actionIcon(
+                        icon: Icon(Icons.emoji_emotions),
+                        onPressed: (){
+                          setState(() {
+                            emojiShowing=!emojiShowing;
+                          });
+                        }
+                      ),
                       SizedBox(
                         width: 10,
                       ),
@@ -154,7 +164,46 @@ class _ChatPageState extends State<ChatPage> {
                 )
               ],
             ),
-          )
+          ),
+          Offstage(
+              offstage: !emojiShowing,
+              child: SizedBox(
+                  height: 250,
+                  child: EmojiPicker(
+                    textEditingController: controller,
+                    onBackspacePressed: (){},
+                    config: Config(
+                      columns: 7,
+                      // Issue: https://github.com/flutter/flutter/issues/28894
+                      emojiSizeMax: 32,
+                      verticalSpacing: 0,
+                      horizontalSpacing: 0,
+                      gridPadding: EdgeInsets.zero,
+                      initCategory: Category.RECENT,
+                      bgColor: Theme.of(context).primaryColor,
+                      indicatorColor: Colors.green,
+                      iconColor: Colors.grey,
+                      iconColorSelected: Colors.green,
+                      backspaceColor: Theme.of(context).secondaryHeaderColor,
+                      skinToneDialogBgColor: Theme.of(context).secondaryHeaderColor,
+                      skinToneIndicatorColor: Colors.grey,
+                      enableSkinTones: true,
+                      showRecentsTab: true,
+                      recentsLimit: 28,
+                      replaceEmojiOnLimitExceed: false,
+                      noRecents: const Text(
+                        'No Recents',
+                        style: TextStyle(fontSize: 20, color: Colors.black26),
+                        textAlign: TextAlign.center,
+                      ),
+                      loadingIndicator: const SizedBox.shrink(),
+                      tabIndicatorAnimDuration: kTabScrollDuration,
+                      categoryIcons: const CategoryIcons(),
+                      buttonMode: ButtonMode.MATERIAL,
+                      checkPlatformCompatibility: true,
+                    ),
+                  )),
+            ),
         ],
       ),
     );
@@ -175,8 +224,12 @@ class _ChatPageState extends State<ChatPage> {
   }
   Widget actionIcon({required Icon icon,void Function()? onPressed}){
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 12),
-      child: icon,
+      padding: const EdgeInsets.only(bottom: 4),
+      child: IconButton(
+        splashRadius: 1,
+        icon: icon,
+        onPressed: onPressed,
+      ),
     );
   }
 }

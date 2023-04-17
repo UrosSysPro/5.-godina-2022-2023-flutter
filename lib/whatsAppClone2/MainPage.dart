@@ -16,24 +16,7 @@ import 'package:provider/provider.dart';
 
 var navigatorKey = GlobalKey<NavigatorState>();
 
-@pragma('vm:entry-point')
-Future<void> _onBackgroundMessage(RemoteMessage message) async {
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  print(message.data);
-  print(message.notification?.title);
-  print(message.notification?.body);
-  print(message.senderId);
-  print(message.messageType);
-}
-
-void _onMessage(RemoteMessage message) {
-  print(message.data);
-  print(message.notification?.title);
-  print(message.notification?.body);
-  print(message.senderId);
-  print(message.messageType);
-}
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -49,29 +32,6 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     // TODO: implement initState
     auth.setPersistence(Persistence.LOCAL);
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-    messaging
-        .requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    )
-        .then((setting) {
-      print('User granted permission: ${setting.authorizationStatus}');
-    });
-    var vapid =
-        "BA6u_Mioay2qHBjc8Zf3l8rBbSp1R2yQm0bdrKRwroQCSTxa4K8QyT_nVh4LspvNzx5lX6_T-kfKfRsUO1_YmoU";
-    messaging.getToken(vapidKey: vapid).then((value) {
-      print(value);
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen(_onMessage);
-    FirebaseMessaging.onMessage.listen(_onMessage);
-    FirebaseMessaging.onBackgroundMessage(_onBackgroundMessage);
   }
 
   @override

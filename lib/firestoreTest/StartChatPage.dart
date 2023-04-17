@@ -31,7 +31,7 @@ class _StartChatPageState extends State<StartChatPage> {
           if(snapshot.hasError)return Container(color: Colors.red,);
           if(!snapshot.hasData)return Container(color: Colors.white,);
           
-          var users=UserModel.fromDoc(snapshot.data!.docs);
+          var users=UserModel.fromDocs(snapshot.data!.docs);
 
           return ListView.builder(
             itemCount: users.length,

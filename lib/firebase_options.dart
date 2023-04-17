@@ -27,9 +27,15 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        return windows;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.linux:
-        return linux;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for linux - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
@@ -60,6 +66,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '485958768252',
     projectId: 'firesotretest-f953c',
     storageBucket: 'firesotretest-f953c.appspot.com',
+    androidClientId: '485958768252-jqic4smqfcd9qi9foapce3sn9ja341sc.apps.googleusercontent.com',
     iosClientId: '485958768252-dak0jutck3efb09abja3kc31rpq11uss.apps.googleusercontent.com',
     iosBundleId: 'com.example.app',
   );
@@ -70,25 +77,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '485958768252',
     projectId: 'firesotretest-f953c',
     storageBucket: 'firesotretest-f953c.appspot.com',
+    androidClientId: '485958768252-jqic4smqfcd9qi9foapce3sn9ja341sc.apps.googleusercontent.com',
     iosClientId: '485958768252-dak0jutck3efb09abja3kc31rpq11uss.apps.googleusercontent.com',
     iosBundleId: 'com.example.app',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyCnbN-thopCWaWMy3BvT7QJP-FnwoVp4v0',
-    appId: '1:485958768252:web:c584a06c380e016a695bf9',
-    messagingSenderId: '485958768252',
-    projectId: 'firesotretest-f953c',
-    authDomain: 'firesotretest-f953c.firebaseapp.com',
-    storageBucket: 'firesotretest-f953c.appspot.com',
-  );
-
-  static const FirebaseOptions linux = FirebaseOptions(
-    apiKey: 'AIzaSyCnbN-thopCWaWMy3BvT7QJP-FnwoVp4v0',
-    appId: '1:485958768252:web:589fd053d28f095f695bf9',
-    messagingSenderId: '485958768252',
-    projectId: 'firesotretest-f953c',
-    authDomain: 'firesotretest-f953c.firebaseapp.com',
-    storageBucket: 'firesotretest-f953c.appspot.com',
   );
 }

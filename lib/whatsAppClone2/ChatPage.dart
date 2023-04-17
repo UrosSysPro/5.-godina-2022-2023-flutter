@@ -1,4 +1,3 @@
-
 import 'package:app/whatsAppClone2/ChatModel.dart';
 import 'package:app/whatsAppClone2/MessageModel.dart';
 import 'package:app/whatsAppClone2/MessageView.dart';
@@ -8,12 +7,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatefulWidget {
-  
   UserModel user;
   UserModel? other;
   ChatModel chat;
-  
-  ChatPage(this.chat,this.user,this.other);
+
+  ChatPage(this.chat, this.user, this.other);
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -21,20 +19,25 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   late TextEditingController controller;
-  var db=FirebaseFirestore.instance;
+  late FocusNode focusNode;
+  var db = FirebaseFirestore.instance;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    controller=TextEditingController();
+    controller = TextEditingController();
+    focusNode=new FocusNode();
   }
+
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
     controller.dispose();
+    focusNode.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,28 +46,34 @@ class _ChatPageState extends State<ChatPage> {
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(widget.other?.nickname??"Loading..."),
+        title: Text(widget.other?.nickname ?? "Loading..."),
       ),
       body: Column(
         children: [
           Expanded(
             child: StreamBuilder(
-              stream: db.collection("messages")//.orderBy("time")
-              .where("chatId",isEqualTo: widget.chat.id).orderBy("time").limit(100)
-              .snapshots(),
-              builder: (context,snapshot){
-                if(snapshot.hasError)return Container(color: Colors.red,);
-                if(!snapshot.hasData)return Center(child: Text("Loading..."),);
-                
-                var messages=MessageModel.fromDocs(snapshot.data!.docs);
+              stream: db
+                  .collection("messages") //.orderBy("time")
+                  .where("chatId", isEqualTo: widget.chat.id)
+                  .orderBy("time",descending: true)
+                  .limit(100)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError)
+                  return Center(child: Text(snapshot.error.toString()),);
+                if (!snapshot.hasData)
+                  return Center(
+                    child: Text("Loading..."),
+                  );
+
+                var messages = MessageModel.fromDocs(snapshot.data!.docs);
 
                 return ListView.builder(
+                  reverse: true,
                   itemCount: messages.length,
-                  itemBuilder: (context,index){
+                  itemBuilder: (context, index) {
                     return MessageView(
-                      message: messages[index],
-                      user:widget.user
-                    );
+                        message: messages[index], user: widget.user);
                   },
                 );
               },
@@ -75,56 +84,70 @@ class _ChatPageState extends State<ChatPage> {
             child: Row(
               children: [
                 Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                    decoration: BoxDecoration(
+                    child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                  decoration: BoxDecoration(
                       color: Color.fromARGB(255, 19, 19, 19),
-                      borderRadius: BorderRadius.circular(100)
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.emoji_emotions),
-                        SizedBox(width: 10,),
-                        Expanded(
-                          child: TextField(
-                            controller: controller,
-                            decoration: null,
-                            style: TextStyle(
-                              fontSize: 20
-                            ),
+                      borderRadius: BorderRadius.circular(25)),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      actionIcon(icon: Icon(Icons.emoji_emotions)),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: TextField(
+                          
+                          maxLines: 4,
+                          minLines: 1,
+                          focusNode: focusNode,
+                          controller: controller,
+                          textInputAction: TextInputAction.newline,
+                          onSubmitted: (value) {
+                            // send(value);
+                            // focusNode.requestFocus();
+                          },
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Type a message",
+                            contentPadding: EdgeInsets.symmetric(vertical: 10),
+
                           ),
+                          style: TextStyle(fontSize: 20),
                         ),
-                        SizedBox(width: 10,),
-                        Icon(Icons.attachment),
-                        SizedBox(width: 10,),
-                        Icon(Icons.photo),
-                        SizedBox(width: 10,),
-                      ],
-                    ),
-                  )
-                ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      actionIcon(icon: Icon(Icons.attachment)),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      actionIcon(icon: Icon(Icons.photo)),
+                      SizedBox(
+                        width: 10,
+                      ),
+                    ],
+                  ),
+                )),
                 Padding(
-                  padding:  EdgeInsets.only(left: 10),
+                  padding: EdgeInsets.only(left: 10),
                   child: Container(
+                    width: 48,
+                    height: 48,
                     padding: EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      color: Theme.of(context).primaryColor
-                    ),
+                        borderRadius: BorderRadius.circular(50),
+                        color: Theme.of(context).primaryColor),
                     child: IconButton(
                       splashRadius: 1,
-                      icon: Icon(Icons.send,size: 20,),
-                      onPressed: (){
-                        if(controller.text.isNotEmpty){
-                          var t=Timestamp.fromDate(DateTime.now());
-                          db.collection("messages").add(<String,dynamic>{
-                            "chatId":widget.chat.id,
-                            "text":controller.text,
-                            "time":t,
-                            "userId":widget.user.id
-                          });
-                          controller.text="";
-                        }
+                      icon: Icon(
+                        Icons.send,
+                        size: 20,
+                      ),
+                      onPressed: () {
+                        send(controller.text);
                       },
                     ),
                   ),
@@ -134,6 +157,26 @@ class _ChatPageState extends State<ChatPage> {
           )
         ],
       ),
+    );
+  }
+
+  void send(String message) {
+    message=message.trim();
+    if (message.isNotEmpty) {
+      var t = Timestamp.fromDate(DateTime.now());
+      db.collection("messages").add(<String, dynamic>{
+        "chatId": widget.chat.id,
+        "text": message,
+        "time": t,
+        "userId": widget.user.id
+      });
+      controller.text = "";
+    }
+  }
+  Widget actionIcon({required Icon icon,void Function()? onPressed}){
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 12),
+      child: icon,
     );
   }
 }

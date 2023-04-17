@@ -20,6 +20,7 @@ class MessageView extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 2,horizontal:4),
         child: Container(
+          constraints: BoxConstraints(maxWidth: 300),
           padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
@@ -29,7 +30,8 @@ class MessageView extends StatelessWidget {
             message.text,
             style: TextStyle(
               color: Colors.white,
-              fontSize: 20
+              fontSize: 20,
+              
             ),
           ),
         ),

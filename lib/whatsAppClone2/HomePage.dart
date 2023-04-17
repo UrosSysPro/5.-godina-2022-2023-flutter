@@ -1,3 +1,4 @@
+import 'package:app/whatsAppClone2/StartChatPage.dart';
 import 'package:app/whatsAppClone2/ChatModel.dart';
 import 'package:app/whatsAppClone2/UserModel.dart';
 import 'package:app/whatsAppClone2/ChatPage.dart';
@@ -57,27 +58,28 @@ class _HomePageState extends State<HomePage> {
             actions: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                // child: ClipRRect(
-                //   borderRadius: BorderRadius.circular(20),
-                //   child: Image(
-                //     image: NetworkImage(
-                //       userInfo.photoUrl
-                //     ),
-                //     fit: BoxFit.cover,
-                //   ),
-                // ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image(
+                    image: NetworkImage(
+                      userInfo.photoUrl
+                    ),
+                    fit: BoxFit.cover,
+                    errorBuilder: (context,error,stackTrace){
+                      return Icon(Icons.person);
+                    },
+                  ),
+                ),
               )
             ],
           ),
-          body: chatList2(userInfo),
+          body: chatList(userInfo),
           floatingActionButton: FloatingActionButton.extended(
             icon: Icon(Icons.chat),
             label: Text("Start Chat"),
             onPressed: () {
               Navigator.push(context, CupertinoPageRoute(builder: (context) {
-                return Container(
-                  color: Colors.cyan,
-                );
+                return StartChatPage(userInfo);
               }));
             },
           ),
@@ -86,7 +88,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget chatList2(UserModel userInfo) {
+  Widget chatList(UserModel userInfo) {
     return StreamBuilder(
       stream: db
           .collection("chats")
@@ -118,7 +120,18 @@ class _HomePageState extends State<HomePage> {
             UserModel? other=context.watch<UsersState>().users[othersId];
             // print(other?.toString());
             return ListTile(
-              leading: Icon(Icons.person),
+              leading: SizedBox(
+                width: 30,height: 30,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Image(
+                    image: NetworkImage(other?.photoUrl??"nema",),
+                    errorBuilder: (context,error,stackTrace){
+                      return Icon(Icons.person);
+                    },
+                  ),
+                ),
+              ),
               title: Text(other?.nickname??"nema"),
               // subtitle: Text(uid2),
               onTap: () {
@@ -132,42 +145,4 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-
-  // Widget chatList(UserModel userInfo) {
-  //   return StreamBuilder(
-  //     stream: db
-  //         .collection("chats")
-  //         .where("uids", arrayContains: widget.user.uid)
-  //         .snapshots(),
-  //     builder: (context, snapshot) {
-  //       if (snapshot.hasError)
-  //         return Container(
-  //           color: Colors.red,
-  //         );
-  //       if (!snapshot.hasData)
-  //         return Center(
-  //           child: Text("Loading..."),
-  //         );
-  //       var chats = ChatModel.fromDocs(snapshot.data!.docs);
-
-  //       return ListView.builder(
-  //         itemCount: chats.length,
-  //         itemBuilder: (context, index) {
-  //           String uid1 = chats[index].uid1;
-  //           String uid2 = chats[index].uid2;
-  //           return ListTile(
-  //             leading: Icon(Icons.person),
-  //             title: Text(uid1),
-  //             subtitle: Text(uid2),
-  //             onTap: () {
-  //               Navigator.push(context, CupertinoPageRoute(builder: (context) {
-  //                 return ChatPage(chats[index], userInfo);
-  //               }));
-  //             },
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
 }

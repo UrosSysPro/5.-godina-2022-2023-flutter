@@ -1,16 +1,20 @@
 import 'package:app/firestoreTest/models/ChatModel.dart';
 import 'package:app/firestoreTest/models/UserModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
-class HomePage{
+class HomePageState with ChangeNotifier{
   static var db=FirebaseFirestore.instance;
   
-  List<ChatModel> chats=[];
   Map<String,UserModel> users={};
 
-  HomePage(UserModel user){
-    var sub=db.collection("chats").where("uids",arrayContains: user.uid).snapshots().listen((event) { 
-      chats=ChatModel.fromDoc(event.docs);
-    });
+  void addIfDoesntExist(String uid){
+    if(users[uid]==null){
+      db.collection("users").doc(uid).get().then((value) {
+        users[uid]=UserModel.fromDoc(value);
+        notifyListeners();
+        print(users[uid]);
+      });
+    }
   }
 }

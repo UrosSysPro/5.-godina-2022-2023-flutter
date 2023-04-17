@@ -22,4 +22,14 @@ class UserModel{
       doc.id
     );
   }
+
+  static List<UserModel> fromDocs(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs){
+      List<UserModel> users=[];
+
+      for(var doc in docs){
+        users.add(fromDoc(doc));
+      }
+
+      return users;
+  }
 }

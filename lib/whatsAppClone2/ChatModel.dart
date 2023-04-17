@@ -19,4 +19,9 @@ class ChatModel{
 
     return list;
   }
+
+  static ChatModel fromDoc(DocumentSnapshot<Map<String, dynamic>> doc){
+    var json=doc.data()!;
+    return ChatModel(json["uids"][0],json["uids"][1],doc.id);
+  }
 }

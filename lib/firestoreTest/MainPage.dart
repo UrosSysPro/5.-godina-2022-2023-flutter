@@ -1,28 +1,33 @@
 import 'package:app/firestoreTest/HomePage.dart';
 import 'package:app/firestoreTest/SetupAccount.dart';
+import 'package:app/firestoreTest/states/HomePageState.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: "Sign in",
-        theme: ThemeData.dark().copyWith(useMaterial3: true),
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          body: StreamBuilder(
-            stream: FirebaseAuth.instance.authStateChanges(),
-            builder: (context, snapshot) {
-              if (snapshot.error != null) return errorPage(snapshot.error);
-              if (snapshot.data == null) return signInPage();
-              return SetupAccount(user:snapshot.data!);
-            },
-          ),
-        ));
+    return ChangeNotifierProvider(
+      create: (context)=>HomePageState(),
+      child: MaterialApp(
+          title: "Sign in",
+          theme: ThemeData.dark().copyWith(useMaterial3: true),
+          debugShowCheckedModeBanner: false,
+          home: Scaffold(
+            body: StreamBuilder(
+              stream: FirebaseAuth.instance.authStateChanges(),
+              builder: (context, snapshot) {
+                if (snapshot.error != null) return errorPage(snapshot.error);
+                if (snapshot.data == null) return signInPage();
+                return SetupAccount(user:snapshot.data!);
+              },
+            ),
+          )),
+    );
   }
 
   Widget errorPage(Object? error) {

@@ -5,6 +5,7 @@ import 'package:app/whatsAppClone2/UserModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatefulWidget {
@@ -21,15 +22,16 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   late TextEditingController controller;
   late FocusNode focusNode;
-  var emojiShowing=false;
+  var emojiShowing = false;
   var db = FirebaseFirestore.instance;
+  var ref = FirebaseDatabase.instance.ref();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     controller = TextEditingController();
-    focusNode=new FocusNode();
+    focusNode = new FocusNode();
   }
 
   @override
@@ -57,12 +59,14 @@ class _ChatPageState extends State<ChatPage> {
               stream: db
                   .collection("messages") //.orderBy("time")
                   .where("chatId", isEqualTo: widget.chat.id)
-                  .orderBy("time",descending: true)
+                  .orderBy("time", descending: true)
                   .limit(100)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError)
-                  return Center(child: Text(snapshot.error.toString()),);
+                  return Center(
+                    child: Text(snapshot.error.toString()),
+                  );
                 if (!snapshot.hasData)
                   return Center(
                     child: Text("Loading..."),
@@ -88,7 +92,7 @@ class _ChatPageState extends State<ChatPage> {
               children: [
                 Expanded(
                     child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
+                  padding: EdgeInsets.only(right: 8),
                   decoration: BoxDecoration(
                       color: Color.fromARGB(255, 19, 19, 19),
                       borderRadius: BorderRadius.circular(25)),
@@ -96,19 +100,17 @@ class _ChatPageState extends State<ChatPage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       actionIcon(
-                        icon: Icon(Icons.emoji_emotions),
-                        onPressed: (){
-                          setState(() {
-                            emojiShowing=!emojiShowing;
-                          });
-                        }
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
+                          icon: Icon(Icons.emoji_emotions),
+                          onPressed: () {
+                            setState(() {
+                              emojiShowing = !emojiShowing;
+                            });
+                          }),
+                      // SizedBox(
+                      //   width: 10,
+                      // ),
                       Expanded(
                         child: TextField(
-                          
                           maxLines: 4,
                           minLines: 1,
                           focusNode: focusNode,
@@ -120,24 +122,23 @@ class _ChatPageState extends State<ChatPage> {
                           },
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: "Type a message",
+                            hintText: "Message",
                             contentPadding: EdgeInsets.symmetric(vertical: 10),
-
                           ),
                           style: TextStyle(fontSize: 20),
                         ),
                       ),
-                      SizedBox(
-                        width: 10,
-                      ),
+                      // SizedBox(
+                      //   width: 10,
+                      // ),
                       actionIcon(icon: Icon(Icons.attachment)),
-                      SizedBox(
-                        width: 10,
-                      ),
+                      // SizedBox(
+                      //   width: 10,
+                      // ),
                       actionIcon(icon: Icon(Icons.photo)),
-                      SizedBox(
-                        width: 10,
-                      ),
+                      // SizedBox(
+                      //   width: 10,
+                      // ),
                     ],
                   ),
                 )),
@@ -146,15 +147,14 @@ class _ChatPageState extends State<ChatPage> {
                   child: Container(
                     width: 48,
                     height: 48,
-                    padding: EdgeInsets.all(4),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
                         color: Theme.of(context).primaryColor),
                     child: IconButton(
+                      iconSize: 20,
                       splashRadius: 1,
                       icon: Icon(
                         Icons.send,
-                        size: 20,
                       ),
                       onPressed: () {
                         send(controller.text);
@@ -166,51 +166,52 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ),
           Offstage(
-              offstage: !emojiShowing,
-              child: SizedBox(
-                  height: 250,
-                  child: EmojiPicker(
-                    textEditingController: controller,
-                    onBackspacePressed: (){},
-                    config: Config(
-                      columns: 7,
-                      // Issue: https://github.com/flutter/flutter/issues/28894
-                      emojiSizeMax: 32,
-                      verticalSpacing: 0,
-                      horizontalSpacing: 0,
-                      gridPadding: EdgeInsets.zero,
-                      initCategory: Category.RECENT,
-                      bgColor: Theme.of(context).primaryColor,
-                      indicatorColor: Colors.green,
-                      iconColor: Colors.grey,
-                      iconColorSelected: Colors.green,
-                      backspaceColor: Theme.of(context).secondaryHeaderColor,
-                      skinToneDialogBgColor: Theme.of(context).secondaryHeaderColor,
-                      skinToneIndicatorColor: Colors.grey,
-                      enableSkinTones: true,
-                      showRecentsTab: true,
-                      recentsLimit: 28,
-                      replaceEmojiOnLimitExceed: false,
-                      noRecents: const Text(
-                        'No Recents',
-                        style: TextStyle(fontSize: 20, color: Colors.black26),
-                        textAlign: TextAlign.center,
-                      ),
-                      loadingIndicator: const SizedBox.shrink(),
-                      tabIndicatorAnimDuration: kTabScrollDuration,
-                      categoryIcons: const CategoryIcons(),
-                      buttonMode: ButtonMode.MATERIAL,
-                      checkPlatformCompatibility: true,
+            offstage: !emojiShowing,
+            child: SizedBox(
+                height: 250,
+                child: EmojiPicker(
+                  textEditingController: controller,
+                  onBackspacePressed: () {},
+                  config: Config(
+                    columns: 7,
+                    // Issue: https://github.com/flutter/flutter/issues/28894
+                    emojiSizeMax: 32,
+                    verticalSpacing: 0,
+                    horizontalSpacing: 0,
+                    gridPadding: EdgeInsets.zero,
+                    initCategory: Category.RECENT,
+                    bgColor: Theme.of(context).primaryColor,
+                    indicatorColor: Colors.green,
+                    iconColor: Colors.grey,
+                    iconColorSelected: Colors.green,
+                    backspaceColor: Theme.of(context).secondaryHeaderColor,
+                    skinToneDialogBgColor:
+                        Theme.of(context).secondaryHeaderColor,
+                    skinToneIndicatorColor: Colors.grey,
+                    enableSkinTones: true,
+                    showRecentsTab: true,
+                    recentsLimit: 28,
+                    replaceEmojiOnLimitExceed: false,
+                    noRecents: const Text(
+                      'No Recents',
+                      style: TextStyle(fontSize: 20, color: Colors.grey),
+                      textAlign: TextAlign.center,
                     ),
-                  )),
-            ),
+                    loadingIndicator: const SizedBox.shrink(),
+                    tabIndicatorAnimDuration: kTabScrollDuration,
+                    categoryIcons: const CategoryIcons(),
+                    buttonMode: ButtonMode.MATERIAL,
+                    checkPlatformCompatibility: true,
+                  ),
+                )),
+          ),
         ],
       ),
     );
   }
 
   void send(String message) {
-    message=message.trim();
+    message = message.trim();
     if (message.isNotEmpty) {
       var t = Timestamp.fromDate(DateTime.now());
       db.collection("messages").add(<String, dynamic>{
@@ -220,14 +221,25 @@ class _ChatPageState extends State<ChatPage> {
         "userId": widget.user.id
       });
       controller.text = "";
+      if (widget.other?.id != null) {
+        ref.child("notifications").push().set(<String, dynamic>{
+          "userId": widget.user.id,
+          "chatId": widget.chat.id,
+          "otherId": widget.other?.id
+        });
+      }
     }
   }
-  Widget actionIcon({required Icon icon,void Function()? onPressed}){
+
+  Widget actionIcon({required Icon icon, void Function()? onPressed}) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.only(bottom: 3.5),
+      // padding: EdgeInsets.zero,
       child: IconButton(
+        iconSize: 25,
         splashRadius: 1,
         icon: icon,
+        padding: EdgeInsets.zero,
         onPressed: onPressed,
       ),
     );

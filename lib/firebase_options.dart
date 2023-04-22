@@ -49,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '485958768252',
     projectId: 'firesotretest-f953c',
     authDomain: 'firesotretest-f953c.firebaseapp.com',
+    databaseURL: 'https://firesotretest-f953c-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'firesotretest-f953c.appspot.com',
   );
 
@@ -57,6 +58,7 @@ class DefaultFirebaseOptions {
     appId: '1:485958768252:android:c2f6ca71907de0cb695bf9',
     messagingSenderId: '485958768252',
     projectId: 'firesotretest-f953c',
+    databaseURL: 'https://firesotretest-f953c-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'firesotretest-f953c.appspot.com',
   );
 
@@ -65,6 +67,7 @@ class DefaultFirebaseOptions {
     appId: '1:485958768252:ios:cddb61d623511034695bf9',
     messagingSenderId: '485958768252',
     projectId: 'firesotretest-f953c',
+    databaseURL: 'https://firesotretest-f953c-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'firesotretest-f953c.appspot.com',
     androidClientId: '485958768252-jqic4smqfcd9qi9foapce3sn9ja341sc.apps.googleusercontent.com',
     iosClientId: '485958768252-dak0jutck3efb09abja3kc31rpq11uss.apps.googleusercontent.com',
@@ -76,6 +79,7 @@ class DefaultFirebaseOptions {
     appId: '1:485958768252:ios:cddb61d623511034695bf9',
     messagingSenderId: '485958768252',
     projectId: 'firesotretest-f953c',
+    databaseURL: 'https://firesotretest-f953c-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'firesotretest-f953c.appspot.com',
     androidClientId: '485958768252-jqic4smqfcd9qi9foapce3sn9ja341sc.apps.googleusercontent.com',
     iosClientId: '485958768252-dak0jutck3efb09abja3kc31rpq11uss.apps.googleusercontent.com',

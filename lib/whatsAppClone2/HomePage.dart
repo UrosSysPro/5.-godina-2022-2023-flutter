@@ -77,8 +77,16 @@ class _HomePageState extends State<HomePage> {
     });
     
     messaging.getToken(vapidKey: vapid).then((value) {
+      try{
+        myDocRef.update(<String,dynamic>{
+          "messagingId":value
+        });
+      }catch(e,stackTrace){
+        print(stackTrace);
+      }
       print(value);
     });
+
     onMessagingTokenRefresh=messaging.onTokenRefresh.listen((event) {print(event);});
     onMessageSubscription=FirebaseMessaging.onMessageOpenedApp.listen(_onMessage);
     onMessageOpenSubscription=FirebaseMessaging.onMessage.listen(_onMessage);
@@ -119,13 +127,7 @@ class _HomePageState extends State<HomePage> {
             color: Colors.orange,
           );
         }
-        if(json["messagingId"]==null){
-          messaging.getToken(vapidKey: vapid).then((value) {
-            myDocRef.update(<String,dynamic>{
-              "messagingId":value
-            });
-          });
-        }
+        
         var userInfo = UserModel.fromDoc(snapshot.data!);
         //chat
         return Scaffold(

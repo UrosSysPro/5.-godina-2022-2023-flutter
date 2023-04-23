@@ -44,6 +44,8 @@ dependencies:
   firebase_messaging: ^14.4.0
   emoji_picker_flutter: ^1.5.4
   firebase_database: ^10.1.1
+  flutter_webrtc: ^0.9.26
+  sdp_transform: ^0.3.2
   
   
 

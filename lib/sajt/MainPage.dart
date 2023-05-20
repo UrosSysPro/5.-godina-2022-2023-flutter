@@ -6,8 +6,12 @@ import 'package:app/sajt/NavBarItem.dart';
 
 import 'package:app/sajt/PageSection.dart';
 
-import 'Gallery.dart';
-import 'GalleryItem.dart';
+import 'package:app/sajt/Footer.dart';
+import 'package:app/sajt/Gallery.dart';
+import 'package:app/sajt/GalleryItem.dart';
+import 'package:provider/provider.dart';
+
+import 'ExpandedNavigationState.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -17,7 +21,6 @@ class MainPage extends StatelessWidget {
     return CupertinoApp(
       home: CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          
           backgroundColor: CupertinoColors.black.withAlpha(180),
           middle: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -160,34 +163,43 @@ class MainPage extends StatelessWidget {
                   ],
                 ),
                 Gallery(
-                list: [
-                  GalleryItem(
-                    descrtiption: "lfdjas;l dskf;jadslfk dsfljsdfl skdjflas sdflfslfs dflkfjslf ldksfj",
-                    color: Colors.green,
-                  ),
-                  GalleryItem(
-                    descrtiption: "lfdjas;l dskf;jadslfk dsfljsdfl skdjflas sdflfslfs dflkfjslf ldksfj",
-                    color: Colors.blue,
-                  ),
-                  GalleryItem(
-                    descrtiption: "lfdjas;l dskf;jadslfk dsfljsdfl skdjflas sdflfslfs dflkfjslf ldksfj",
-                    color: Colors.red,
-                  ),
-                  GalleryItem(
-                    descrtiption: "lfdjas;l dskf;jadslfk dsfljsdfl skdjflas sdflfslfs dflkfjslf ldksfj",
-                    color: Colors.purple,
-                  ),
-                  GalleryItem(
-                    descrtiption: "lfdjas;l dskf;jadslfk dsfljsdfl skdjflas sdflfslfs dflkfjslf ldksfj",
-                    color: Colors.orange,
-                  ),
-                ],
-              ),
+                  list: [
+                    GalleryItem(
+                      descrtiption:
+                          "lfdjas;l dskf;jadslfk dsfljsdfl skdjflas sdflfslfs dflkfjslf ldksfj",
+                      color: Colors.green,
+                    ),
+                    GalleryItem(
+                      descrtiption:
+                          "lfdjas;l dskf;jadslfk dsfljsdfl skdjflas sdflfslfs dflkfjslf ldksfj",
+                      color: Colors.blue,
+                    ),
+                    GalleryItem(
+                      descrtiption:
+                          "lfdjas;l dskf;jadslfk dsfljsdfl skdjflas sdflfslfs dflkfjslf ldksfj",
+                      color: Colors.red,
+                    ),
+                    GalleryItem(
+                      descrtiption:
+                          "lfdjas;l dskf;jadslfk dsfljsdfl skdjflas sdflfslfs dflkfjslf ldksfj",
+                      color: Colors.purple,
+                    ),
+                    GalleryItem(
+                      descrtiption:
+                          "lfdjas;l dskf;jadslfk dsfljsdfl skdjflas sdflfslfs dflkfjslf ldksfj",
+                      color: Colors.orange,
+                    ),
+                  ],
+                ),
+                Footer(),
               ],
             ),
-            /*
-              ovde ide expanded navigation
-            */
+            // Container(
+            //   // height:
+            //       // context.watch<ExpandedNavigationState>().expanded ? 700 : 0,
+            //   width: double.infinity,
+            //   color: Colors.grey,
+            // ),
           ],
         ),
       ),

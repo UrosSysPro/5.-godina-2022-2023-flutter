@@ -2,6 +2,8 @@ import 'package:app/sajt/GalleryItem.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app/sajt/Dot.dart';
+
 class Gallery extends StatefulWidget {
   List<GalleryItem> list;
   Gallery({
@@ -18,9 +20,7 @@ class _GalleryState extends State<Gallery> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    controller=PageController(
-      viewportFraction: 0.9
-    );
+    controller = PageController(viewportFraction: 0.9);
   }
 
   @override
@@ -40,7 +40,7 @@ class _GalleryState extends State<Gallery> {
             child: PageView.builder(
               controller: controller,
               itemCount: widget.list.length,
-              itemBuilder: (context,index){
+              itemBuilder: (context, index) {
                 return Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   child: Stack(
@@ -54,24 +54,29 @@ class _GalleryState extends State<Gallery> {
                         child: Row(
                           children: [
                             FilledButton(
-                              child:Padding(
-                                padding:  EdgeInsets.symmetric(horizontal: 22,vertical: 12),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 22, vertical: 12),
                                 child: Text(
                                   "Stream Now",
                                   style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14
-                                  ),  
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14),
                                 ),
                               ),
-                              onPressed:(){},
+                              onPressed: () {},
                               style: FilledButton.styleFrom(
                                 backgroundColor: Colors.white,
                               ),
                             ),
-                            SizedBox(width: 10,),
-                            Text("Lorem ",style: TextStyle(fontWeight: FontWeight.bold),),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              "Lorem ",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
                             Text(widget.list[index].descrtiption)
                           ],
                         ),
@@ -83,30 +88,20 @@ class _GalleryState extends State<Gallery> {
             ),
           ),
           SizedBox(
-            height: 50,
+            height: 30,
             child: Builder(
-              builder: (context){
-                double size=10;
-                List<Widget> children=[];
-                for(int i=0;i<widget.list.length;i++){
-                  var item=widget.list[i];
-                  children.add(
-                    GestureDetector(
-                      onTap: (){
-                        controller.animateToPage(i, duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Container(
-                          width: size,height: size,
-                          decoration: BoxDecoration(
-                            color: CupertinoColors.darkBackgroundGray,
-                            borderRadius: BorderRadius.circular(size/2.0)
-                          ),
-                        ),
-                      ),
-                    )
-                  );
+              builder: (context) {
+                double size = 8;
+                List<Widget> children = [];
+                for (int i = 0; i < widget.list.length; i++) {
+                  var item = widget.list[i];
+                  children.add(Dot(
+                    onTap: () {
+                      controller.animateToPage(i,
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeInOut);
+                    },
+                  ));
                 }
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.center,

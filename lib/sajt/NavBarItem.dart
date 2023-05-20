@@ -1,4 +1,6 @@
+import 'package:app/sajt/ExpandedNavigationState.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
 class NavBarItem extends StatelessWidget {
   String? text;
@@ -7,19 +9,27 @@ class NavBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      child: text!=null?Text(
-        text!,
-        style: TextStyle(
+    return MouseRegion(
+      onEnter: (event){
+        context.read<ExpandedNavigationState>().setExpanded(true);
+      },
+      onExit: (event){
+        context.read<ExpandedNavigationState>().setExpanded(false);
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: text!=null?Text(
+          text!,
+          style: TextStyle(
+            color: CupertinoColors.systemGrey2,
+            fontWeight: FontWeight.normal,
+            fontSize: 12.5  
+          ),
+        ):Icon(
+          icon!,
+          size: 22,
           color: CupertinoColors.systemGrey2,
-          fontWeight: FontWeight.normal,
-          fontSize: 12.5  
         ),
-      ):Icon(
-        icon!,
-        size: 22,
-        color: CupertinoColors.systemGrey2,
       ),
     );
   }

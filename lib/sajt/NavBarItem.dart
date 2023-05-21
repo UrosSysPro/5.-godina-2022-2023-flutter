@@ -12,9 +12,11 @@ class NavBarItem extends StatelessWidget {
     return MouseRegion(
       onEnter: (event){
         context.read<ExpandedNavigationState>().setExpanded(true);
+        // print("enter");
       },
       onExit: (event){
         context.read<ExpandedNavigationState>().setExpanded(false);
+        // print("exit");
       },
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),

@@ -46,6 +46,8 @@ dependencies:
   firebase_database: ^10.1.1
   flutter_webrtc: ^0.9.26
   sdp_transform: ^0.3.2
+  spotify_sdk: ^2.3.1
+  flutter_dotenv: ^5.0.2
   
   
 
@@ -72,7 +74,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+    - .env
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
